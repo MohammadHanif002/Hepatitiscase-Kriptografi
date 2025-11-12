@@ -20,9 +20,6 @@ Route::get('/petaSebaran', function () {
     return view('petaSebaran', ['title' => 'Cluster Penyebaran Hepatitis A Jember']);
 });
 
-// Route::get('dataKasus', function () {
-//     return view('dataKasus', ['title' => 'Data Kasus']);
-// });
 
 Route::get('loginAdmin', function () {
     return view('loginAdmin', ['title' => 'Login Admin']);
@@ -46,6 +43,12 @@ Route::post('/loginAdmin', function (Request $request) {
     }
 })->name('admin.login');
 
+
+// Export ZIP terenkripsi
+Route::post('/kasus/export-encrypted-zip', [KasusController::class, 'exportEncryptedZip'])
+    ->name('kasus.export.encrypted.zip');
+
+
 // Middleware manual (tanpa auth Laravel)
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
 Route::get('/admin/edit/{id}', [AdminController::class, 'edit'])->name('admin.edit');
@@ -53,6 +56,8 @@ Route::post('/admin/update/{id}', [AdminController::class, 'update'])->name('adm
 Route::delete('/admin/delete/{id}', [AdminController::class, 'destroy'])->name('admin.delete');
 Route::get('/admin/create', [AdminController::class, 'create'])->name('admin.create');
 Route::post('/admin/store', [AdminController::class, 'store'])->name('admin.store');
+Route::get('/admin/decrypt', [AdminController::class, 'showDecrypt'])->name('admin.decrypt');
+Route::post('/admin/decrypt', [KasusController::class, 'decryptData'])->name('admin.decrypt.process');
 
 // Route baru untuk menampilkan GeoJSON dengan data kasus hepatitis 
 Route::get('/geojson', [MapController::class, 'geojson'])->name('geojson');

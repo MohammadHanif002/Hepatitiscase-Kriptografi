@@ -85,4 +85,9 @@ class AdminController extends Controller
         $request->session()->regenerateToken(); // Cegah CSRF
         return redirect('/'); // Arahkan ke halaman login
     }
+
+    public function showDecrypt()
+    {
+        return view('decrypt');
+    }
 }

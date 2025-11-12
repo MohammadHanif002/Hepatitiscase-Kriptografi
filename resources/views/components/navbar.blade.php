@@ -12,10 +12,11 @@
                         <x-nav-link href="/petaSebaran" :active="request()->is('petaSebaran')">Peta Sebaran</x-nav-link>
                         <x-nav-link href="/dataKasus" :active="request()->is('dataKasus')">Data Kasus</x-nav-link>
                         <x-nav-link href="/grafikKasus" :active="request()->is('grafikKasus')">Grafik Kasus</x-nav-link>
+                        <x-nav-link href="/admin/decrypt" :active="request()->is('admin/decrypt')">Decrypt CSV</x-nav-link>
                         <div class="ml-auto flex items-baseline space-x-4">
                             <form action="/searchKasus" method="GET" class="flex items-center space-x-2">
                                 <input type="text" name="q" placeholder="Cari kecamatan..."
-                                    class="w-140 rounded-md px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    class="w-100 rounded-md px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <button type="submit"
                                     class="bg-blue-600 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-700">
                                     Cari
