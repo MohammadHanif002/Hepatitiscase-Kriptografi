@@ -7,7 +7,7 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
@@ -30,6 +30,6 @@ Fitur utama:
 - Ekspor CSV terenkripsi → `.enc` (Argon2id + XChaCha20-Poly1305, libsodium)
 - Halaman **Decrypt CSV** di website (untuk pengguna berwenang)
 
-## Tech
+# Tech
 Laravel, Tailwind, Alpine, Leaflet, libsodium.
 If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
