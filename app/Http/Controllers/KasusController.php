@@ -125,67 +125,67 @@ class KasusController extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    public function exportEncryptedCSV(Request $request)
-    {
-        // Validasi input password
-        $data = $request->validate([
-            'password' => 'required|string|min:8',
-        ]);
+    // public function exportEncryptedCSV(Request $request)
+    // {
+    //     // Validasi input password
+    //     $data = $request->validate([
+    //         'password' => 'required|string|min:8',
+    //     ]);
 
-        $password = $data['password'];
+    //     $password = $data['password'];
 
-        if ($request->input('password') !== 'admin123') {
-            return back()->with('alert', 'Password Salah. Coba lagi ya.')
-                ->withInput($request->except('password'));
-        }
+    //     if ($request->input('password') !== 'admin123') {
+    //         return back()->with('alert', 'Password Salah. Coba lagi ya.')
+    //             ->withInput($request->except('password'));
+    //     }
 
 
-        // Bangun CSV di Memori
-        $stream = fopen('php://temp', 'r+');
-        fputcsv($stream, ['ID', 'Kecamatan', 'Jumlah Kasus', 'Tahun']);
-        foreach (Kasus::select('gid', 'kecamatan', 'jumlah_kasus', 'tahun')->orderBy('kecamatan')->get() as $row) {
-            fputcsv($stream, [$row->gid, $row->kecamatan, $row->jumlah_kasus, $row->tahun]);
-        }
+    //     // Bangun CSV di Memori
+    //     $stream = fopen('php://temp', 'r+');
+    //     fputcsv($stream, ['ID', 'Kecamatan', 'Jumlah Kasus', 'Tahun']);
+    //     foreach (Kasus::select('gid', 'kecamatan', 'jumlah_kasus', 'tahun')->orderBy('kecamatan')->get() as $row) {
+    //         fputcsv($stream, [$row->gid, $row->kecamatan, $row->jumlah_kasus, $row->tahun]);
+    //     }
 
-        rewind($stream);
-        $csv = stream_get_contents($stream);
-        fclose($stream);
+    //     rewind($stream);
+    //     $csv = stream_get_contents($stream);
+    //     fclose($stream);
 
-        // Pastikan ekstensi sodium aktif
-        if (!function_exists('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt')) {
-            abort(500, 'Ekstensi sodium belum aktif di PHP.');
-        }
+    //     // Pastikan ekstensi sodium aktif
+    //     if (!function_exists('sodium_crypto_aead_xchacha20poly1305_ietf_encrypt')) {
+    //         abort(500, 'Ekstensi sodium belum aktif di PHP.');
+    //     }
 
-        // Enkripsi CSV menggunakan Sodium
-        // 3) Derive key dari password (Argon2id)
-        // Pastikan ext-sodium aktif
-        $salt = random_bytes(SODIUM_CRYPTO_PWHASH_SALTBYTES);
-        $key = sodium_crypto_pwhash(
-            SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES,
-            $password,
-            $salt,
-            SODIUM_CRYPTO_PWHASH_OPSLIMIT_MODERATE,
-            SODIUM_CRYPTO_PWHASH_MEMLIMIT_MODERATE
-        );
+    //     // Enkripsi CSV menggunakan Sodium
+    //     // 3) Derive key dari password (Argon2id)
+    //     // Pastikan ext-sodium aktif
+    //     $salt = random_bytes(SODIUM_CRYPTO_PWHASH_SALTBYTES);
+    //     $key = sodium_crypto_pwhash(
+    //         SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_KEYBYTES,
+    //         $password,
+    //         $salt,
+    //         SODIUM_CRYPTO_PWHASH_OPSLIMIT_MODERATE,
+    //         SODIUM_CRYPTO_PWHASH_MEMLIMIT_MODERATE
+    //     );
 
-        // 4) Enkripsi AEAD XChaCha20-Poly1305
-        $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
-        $aad = 'hepatitiscase_csv_v1'; // Info tambahan untuk integritas
-        $ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($csv, $aad, $nonce, $key);
-        if (function_exists('sodium_memzero')) {
-            sodium_memzero($key);
-        }
+    //     // 4) Enkripsi AEAD XChaCha20-Poly1305
+    //     $nonce = random_bytes(SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
+    //     $aad = 'hepatitiscase_csv_v1'; // Info tambahan untuk integritas
+    //     $ciphertext = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($csv, $aad, $nonce, $key);
+    //     if (function_exists('sodium_memzero')) {
+    //         sodium_memzero($key);
+    //     }
 
-        // 5) Paketkan salt, nonce, dan ciphertext menjadi satu blob base64
-        $blob = base64_encode($salt . $nonce . $ciphertext);
+    //     // 5) Paketkan salt, nonce, dan ciphertext menjadi satu blob base64
+    //     $blob = base64_encode($salt . $nonce . $ciphertext);
 
-        $filename = 'data_kasus_jember_encrypted.enc';
-        return response($blob, 200, [
-            'Content-Type' => 'text/plain',
-            'Content-Disposition' => "attachment; filename=$filename",
-            'X-Content-Type-Option' => 'no-sniff',
-        ]);
-    }
+    //     $filename = 'data_kasus_jember_encrypted.enc';
+    //     return response($blob, 200, [
+    //         'Content-Type' => 'text/plain',
+    //         'Content-Disposition' => "attachment; filename=$filename",
+    //         'X-Content-Type-Option' => 'no-sniff',
+    //     ]);
+    // }
 
     public function decryptData(Request $request)
     {
@@ -323,8 +323,6 @@ Cara pakai:
 3. Buka menu "Decrypt CSV" di website.
 4. Pilih file "data_kasus_jember_encrypted.enc".
 5. Masukkan password enkripsi yang diberikan oleh admin.
-atauuuuuuuuuuuuuu, kerjakan soal dibawah ini
-* ∫(3x2−4x+5)dx
 6. Klik "Decrypt" → akan mengunduh "data_kasus_jember_decrypted.csv".
 TXT);
         $zip->close();
@@ -334,5 +332,4 @@ TXT);
             'X-Content-Type-Options' => 'nosniff',
         ])->deleteFileAfterSend(true);
     }
-
 }
